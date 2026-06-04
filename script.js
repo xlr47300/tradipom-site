@@ -147,7 +147,7 @@ function applyData(data) {
     ...normalizeParams(DEFAULT_DATA.parametres),
     ...normalizeParams(data.parametres),
   };
-  const textes = byZone(data.textes);
+  const textes = withTextAliases(byZone(data.textes));
 
   applyParams(parametres);
   applyTextes(textes, parametres);
@@ -186,10 +186,11 @@ function applyParams(params) {
 
 function applyTextes(textes, params) {
   const mobile = window.matchMedia("(max-width: 820px)").matches;
-  setText("[data-hero-title]", mobile ? params.slogan_mobile : params.slogan);
+  const heroText = textes.hero || {};
+  setText("[data-hero-title]", heroText.titre || (mobile ? params.slogan_mobile : params.slogan));
   setText("[data-hero-text]", mobile
-    ? params.description_hero_mobile || params.sous_titre
-    : params.description_hero || params.sous_titre);
+    ? heroText.texte || params.description_hero_mobile || params.sous_titre
+    : heroText.texte || params.description_hero || params.sous_titre);
 
   document.querySelectorAll("[data-text-title]").forEach((node) => {
     const zone = node.dataset.textTitle;
@@ -205,7 +206,7 @@ function applyTextes(textes, params) {
 function renderArdoise(items = []) {
   const container = document.querySelector("[data-ardoise-list]");
   if (!container) return;
-  const activeItems = sortActive(items);
+  const activeItems = sortActive(items).filter((item) => hasText(item.nom));
 
   container.innerHTML = activeItems.map((item) => `
     <article class="ardoise-card">
@@ -222,7 +223,7 @@ function renderProducts(items = []) {
   const container = document.querySelector("[data-products-list]");
   if (!container) return;
 
-  container.innerHTML = sortActive(items).map((item, index) => {
+  container.innerHTML = sortActive(items).filter((item) => hasText(item.nom)).map((item, index) => {
     const id = item.image_zone || `prod_${index + 1}`;
     return `
       <article class="product-item">
@@ -237,7 +238,7 @@ function renderAdvantages(items = []) {
   const container = document.querySelector("[data-advantages-list]");
   if (!container) return;
 
-  container.innerHTML = sortActive(items).map((item) => `
+  container.innerHTML = sortActive(items).filter((item) => hasText(item.titre)).map((item) => `
     <article class="advantage-card">
       <span class="advantage-icon" aria-hidden="true">${escapeHtml(iconText(item.icone || item.titre))}</span>
       <div>
@@ -249,8 +250,8 @@ function renderAdvantages(items = []) {
 }
 
 function applyImages(images = []) {
-  sortActive(images).forEach((image) => {
-    const slot = document.getElementById(image.zone);
+  sortActive(images).filter((image) => hasText(image.zone)).forEach((image) => {
+    const slot = document.getElementById(resolveImageZone(image.zone));
     if (!slot || !image.lien_drive) return;
     slot.setAttribute("src", resolveImageUrl(image.lien_drive));
     if (image.alt) slot.setAttribute("placeholder", image.alt);
@@ -268,10 +269,35 @@ function byZone(rows = []) {
   return Object.fromEntries(rows.map((row) => [normalizeKey(row.zone), row]));
 }
 
+function withTextAliases(textes) {
+  return {
+    ...textes,
+    infos: textes.infos || textes.contact,
+    produits: textes.produits || textes.produits_titre,
+    ardoise: textes.ardoise || textes.ardoise_titre,
+  };
+}
+
 function sortActive(items = []) {
   return items
     .filter((item) => normalizeKey(item.actif || "oui") !== "non")
     .sort((a, b) => Number(a.ordre || 0) - Number(b.ordre || 0));
+}
+
+function resolveImageZone(zone = "") {
+  const key = normalizeKey(zone);
+  const aliases = {
+    mg_0: "magasin_1",
+    mg_1: "magasin_2",
+    mg_2: "magasin_3",
+    mg_3: "galerie_1",
+    mg_4: "galerie_2",
+  };
+  return aliases[key] || key;
+}
+
+function hasText(value) {
+  return String(value || "").trim().length > 0;
 }
 
 function compactHours(params) {
