@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tradipom - Fruits et légumes de saison à Bias</title>
+  <meta name="description" content="Tradipom à Bias : fruits et légumes de saison, vente directe, produits locaux et arrivages frais.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="image-slot.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="brand" href="#accueil" aria-label="Accueil Tradipom">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="34" height="38" viewBox="0 0 34 38" fill="none">
+            <path d="M17 8 C15.5 4.5 12.5 3 11.5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M17 8 C18.5 4.5 21.5 3 22.5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M17 8 C10 8 4 14 4 21 C4 30 9 37 17 37 C25 37 30 30 30 21 C30 14 24 8 17 8Z" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="1.9"/>
+            <path d="M9 16 C8 20 8.5 26 11 31" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.38"/>
+          </svg>
+        </span>
+        <span>
+          <strong data-param="titre_site">TRADIPOM</strong>
+          <small>fruiticulteurs</small>
+        </span>
+      </a>
+
+      <button class="menu-button" type="button" aria-label="Ouvrir le menu" aria-expanded="false" data-menu-toggle>
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="nav-links" data-nav-links>
+        <a href="#accueil">Accueil</a>
+        <a href="#produits">Nos produits</a>
+        <a href="#horaires">Horaires</a>
+        <a href="#infos">Trouver le magasin</a>
+      </div>
+
+      <a class="nav-cta" href="mailto:tradipom@gmail.com" data-email-link>Nous ecrire</a>
+    </nav>
+
+    <div class="info-bar">
+      <span class="info-address" data-info-address>1270 Route de Lalandette - 47300 Bias</span>
+      <span class="info-separator" aria-hidden="true"></span>
+      <span data-info-hours>Lun-Ven 9h-19h · Sam 9h-18h · Dim 9h-12h</span>
+      <span class="status-badge" data-param="badge_statut">Ouvert aujourd'hui</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <image-slot id="hero" class="hero-image" placeholder="Photo principale du magasin" shape="rect"></image-slot>
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <p class="arrival-badge" data-param="badge_arrivage">Nouveaux arrivages</p>
+        <h1 data-hero-title>Fruits et légumes de saison, frais et en vente directe</h1>
+        <p data-hero-text>Chez Tradipom à Bias, produits locaux récoltés près de chez vous, vendus frais, sans intermédiaire.</p>
+        <a class="button-primary" href="#ardoise" data-hero-button>Voir l'ardoise du jour</a>
+      </div>
+    </section>
+
+    <section class="ardoise" id="ardoise">
+      <div class="section-inner">
+        <div class="chalk-title">
+          <h2 data-text-title="ardoise">L'ardoise du jour</h2>
+          <span aria-hidden="true"></span>
+        </div>
+        <div class="ardoise-grid" data-ardoise-list></div>
+      </div>
+    </section>
+
+    <section class="products" id="produits">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-text-title="produits">Nos produits de saison</h2>
+          <p data-text-copy="produits">Chaque semaine, selon arrivages et saison.</p>
+        </div>
+        <div class="product-list" data-products-list></div>
+      </div>
+    </section>
+
+    <section class="shop" id="magasin">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-text-title="magasin">Notre magasin</h2>
+          <p data-text-copy="magasin">Un endroit simple, chaleureux, à taille humaine.</p>
+        </div>
+        <div class="shop-gallery">
+          <image-slot id="mg_0" class="shop-photo shop-photo-large" placeholder="Interieur du magasin Tradipom" shape="rounded" radius="8"></image-slot>
+          <image-slot id="mg_1" class="shop-photo" placeholder="Cagettes de bois" shape="rounded" radius="8"></image-slot>
+          <image-slot id="mg_2" class="shop-photo" placeholder="Ardoise des prix" shape="rounded" radius="8"></image-slot>
+          <image-slot id="mg_3" class="shop-photo" placeholder="Accueil Tradipom" shape="rounded" radius="8"></image-slot>
+          <image-slot id="mg_4" class="shop-photo" placeholder="Produits du jour" shape="rounded" radius="8"></image-slot>
+        </div>
+      </div>
+    </section>
+
+    <section class="why">
+      <div class="section-inner">
+        <div class="section-heading">
+          <h2 data-text-title="pourquoi">Pourquoi venir chez nous ?</h2>
+          <p data-text-copy="pourquoi"></p>
+        </div>
+        <div class="advantages-grid" data-advantages-list></div>
+      </div>
+    </section>
+
+    <section class="visit" id="infos">
+      <div class="section-inner">
+        <div class="section-heading section-heading-centered">
+          <h2 data-text-title="infos">Venez nous rendre visite !</h2>
+          <p data-text-copy="infos"></p>
+        </div>
+        <div class="visit-grid" id="horaires">
+          <article>
+            <span aria-hidden="true">Adresse</span>
+            <h3>Adresse</h3>
+            <p data-address-block>1270 Route de Lalandette<br>47300 Bias (Lot-et-Garonne)</p>
+          </article>
+          <article>
+            <span aria-hidden="true">Horaires</span>
+            <h3>Horaires</h3>
+            <p data-hours-block>Lun - Ven : 9h - 19h<br>Sam : 9h - 18h · Dim : 9h - 12h</p>
+          </article>
+          <article>
+            <span aria-hidden="true">Contact</span>
+            <h3>Contact</h3>
+            <p><a href="mailto:tradipom@gmail.com" data-email-text>tradipom@gmail.com</a><br><a href="tel:0553402842" data-phone-text>05 53 40 28 42</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand" href="#accueil" aria-label="Retour accueil Tradipom">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="28" height="31" viewBox="0 0 34 38" fill="none">
+          <path d="M17 8 C15.5 4.5 12.5 3 11.5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M17 8 C18.5 4.5 21.5 3 22.5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          <path d="M17 8 C10 8 4 14 4 21 C4 30 9 37 17 37 C25 37 30 30 30 21 C30 14 24 8 17 8Z" fill="currentColor" fill-opacity="0.16" stroke="currentColor" stroke-width="1.9"/>
+        </svg>
+      </span>
+      <span><strong data-param="titre_site">TRADIPOM</strong><small>fruiticulteurs</small></span>
+    </a>
+    <p data-footer-copy>© 2026 Tradipom SAS - 47300 Bias</p>
+    <a href="mailto:tradipom@gmail.com" data-email-text>tradipom@gmail.com</a>
+  </footer>
+</body>
+</html>
