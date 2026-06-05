@@ -33,15 +33,15 @@ const DEFAULT_DATA = {
     { ordre: "3", nom: "Tomates coeur de boeuf", origine: "Villeneuve (47)", prix: "3,00", unite: "EUR/kg", actif: "oui" },
   ],
   produits: [
-    { ordre: "1", nom: "Pommes", image_zone: "prod_1", actif: "oui" },
-    { ordre: "2", nom: "Poires", image_zone: "prod_2", actif: "oui" },
-    { ordre: "3", nom: "Fraises", image_zone: "prod_3", actif: "oui" },
-    { ordre: "4", nom: "Tomates", image_zone: "prod_4", actif: "oui" },
-    { ordre: "5", nom: "Courgettes", image_zone: "prod_5", actif: "oui" },
-    { ordre: "6", nom: "Carottes", image_zone: "prod_6", actif: "oui" },
-    { ordre: "7", nom: "Poireaux", image_zone: "prod_7", actif: "oui" },
-    { ordre: "8", nom: "Prunes", image_zone: "prod_8", actif: "oui" },
-    { ordre: "9", nom: "Melons", image_zone: "prod_9", actif: "oui" },
+    { ordre: "1", nom: "Pommes", categorie: "Fruits", image_zone: "produit_pommes", prix: "2,20", unite: "€/kg", origine: "Vergers de Guillamou", detail: "Croquantes et parfumees.", statut: "arrivage", actif: "oui" },
+    { ordre: "2", nom: "Poires", categorie: "Fruits", image_zone: "produit_poires", prix: "2,90", unite: "€/kg", origine: "Lot-et-Garonne", detail: "A laisser murir selon votre gout.", statut: "", actif: "oui" },
+    { ordre: "3", nom: "Fraises", categorie: "Fruits", image_zone: "produit_fraises", prix: "4,00", unite: "€/barquette", origine: "Bias (47)", detail: "Selon disponibilite du jour.", statut: "nouveaute", actif: "oui" },
+    { ordre: "4", nom: "Tomates", categorie: "Légumes", image_zone: "produit_tomates", prix: "3,00", unite: "€/kg", origine: "Villeneuve-sur-Lot", detail: "Ideales en salade.", statut: "", actif: "oui" },
+    { ordre: "5", nom: "Courgettes", categorie: "Légumes", image_zone: "produit_courgettes", prix: "1,20", unite: "€/piece", origine: "Agen (47)", detail: "Rondes ou longues selon arrivage.", statut: "promo", actif: "oui" },
+    { ordre: "6", nom: "Carottes", categorie: "Légumes", image_zone: "produit_carottes", prix: "1,80", unite: "€/kg", origine: "Lot-et-Garonne", detail: "Pour soupes, crudites et plats mijotes.", statut: "", actif: "oui" },
+    { ordre: "7", nom: "Jus de pomme", categorie: "Jus & boissons", image_zone: "verger_jus_pomme", prix: "3,50", unite: "la bouteille", origine: "Tradipom", detail: "Pur jus du verger.", statut: "arrivage", actif: "oui" },
+    { ordre: "8", nom: "Compote", categorie: "Produits du verger", image_zone: "verger_compote", prix: "2,90", unite: "le pot", origine: "Tradipom", detail: "Simple, fruitée, sans chichi.", statut: "", actif: "oui" },
+    { ordre: "9", nom: "Pommes en sac", categorie: "Promotions / lots", image_zone: "verger_pommes_sac", prix: "5,00", unite: "le sac", origine: "Tradipom", detail: "Format pratique pour la semaine.", statut: "promo", actif: "oui" },
   ],
   textes: [
     { zone: "ardoise", titre: "L'ardoise du jour", texte: "" },
@@ -152,7 +152,9 @@ function applyData(data) {
   applyParams(parametres);
   applyTextes(textes, parametres);
   renderArdoise(data.ardoise);
+  renderArrivals(data.ardoise, data.produits);
   renderProducts(data.produits);
+  renderOrchard(data.produits);
   renderAdvantages(data.avantages);
   applyImages(data.images);
 }
@@ -222,16 +224,84 @@ function renderArdoise(items = []) {
 function renderProducts(items = []) {
   const container = document.querySelector("[data-products-list]");
   if (!container) return;
+  const products = sortActive(items).filter((item) => hasText(item.nom));
+  renderCategories(products);
 
-  container.innerHTML = sortActive(items).filter((item) => hasText(item.nom)).map((item, index) => {
-    const id = item.image_zone || `prod_${index + 1}`;
-    return `
-      <article class="product-item">
-        <image-slot id="${escapeHtml(id)}" placeholder="${escapeHtml(item.nom)}" shape="circle"></image-slot>
-        <span>${escapeHtml(item.nom)}</span>
-      </article>
-    `;
-  }).join("");
+  container.innerHTML = products.map((item, index) => productCard(item, index)).join("");
+}
+
+function renderCategories(items = []) {
+  const container = document.querySelector("[data-category-list]");
+  if (!container) return;
+  const orderedCategories = [
+    "Fruits",
+    "Légumes",
+    "Produits du verger",
+    "Jus & boissons",
+    "Produits locaux",
+    "Promotions / lots",
+  ];
+  const available = new Set(items.map((item) => productCategory(item)));
+  const categories = orderedCategories.filter((category) => available.has(category));
+  orderedCategories.forEach((category) => {
+    if (!available.has(category)) categories.push(category);
+  });
+
+  container.innerHTML = categories.map((category) => `
+    <span>${escapeHtml(category)}</span>
+  `).join("");
+}
+
+function renderArrivals(ardoiseItems = [], productItems = []) {
+  const container = document.querySelector("[data-arrivals-list]");
+  if (!container) return;
+  const products = sortActive(productItems)
+    .filter((item) => hasText(item.nom))
+    .filter((item) => ["arrivage", "nouveaute", "nouveauté"].includes(normalizeKey(item.statut || "")));
+  const arrivals = products.length ? products : sortActive(ardoiseItems).filter((item) => hasText(item.nom)).slice(0, 4);
+
+  container.innerHTML = arrivals.map((item) => `
+    <article class="arrival-card">
+      <span>${escapeHtml(statusLabel(productStatus(item) || "arrivage"))}</span>
+      <h3>${escapeHtml(item.nom)}</h3>
+      <p>${escapeHtml(item.origine || "Selon arrivage")}</p>
+      ${hasText(productPrice(item)) ? `<strong>${escapeHtml(formatPrice(productPrice(item), productUnit(item)))}</strong>` : ""}
+    </article>
+  `).join("");
+}
+
+function renderOrchard(items = []) {
+  const container = document.querySelector("[data-orchard-list]");
+  if (!container) return;
+  const orchardProducts = sortActive(items)
+    .filter((item) => hasText(item.nom))
+    .filter((item) => isOrchardProduct(item));
+  const products = orchardProducts.length ? orchardProducts : fallbackOrchardProducts();
+
+  container.innerHTML = products.map((item, index) => productCard(item, index, "orchard")).join("");
+}
+
+function productCard(item, index, prefix = "produit") {
+  const imageZone = item.image_zone || `${prefix}_${slugify(item.nom || index + 1)}`;
+  const id = prefix === "produit" ? imageZone : `${prefix}_${slugify(imageZone)}`;
+  const status = statusLabel(productStatus(item));
+  return `
+    <article class="product-card">
+      <div class="product-photo-wrap">
+        <image-slot id="${escapeHtml(id)}" data-image-zone="${escapeHtml(imageZone)}" placeholder="${escapeHtml(item.nom || "Photo produit")}" shape="rounded" radius="8"></image-slot>
+        ${status ? `<span class="product-status">${escapeHtml(status)}</span>` : ""}
+      </div>
+      <div class="product-card-body">
+        <div class="product-card-top">
+          <span class="product-category">${escapeHtml(productCategory(item))}</span>
+          ${hasText(productPrice(item)) ? `<strong class="product-price">${escapeHtml(formatPrice(productPrice(item), productUnit(item)))}</strong>` : `<strong class="product-price product-price-muted">Prix en magasin</strong>`}
+        </div>
+        <h3>${escapeHtml(item.nom)}</h3>
+        <p class="product-origin">${escapeHtml(productOrigin(item) || "Origine selon arrivage")}</p>
+        <p class="product-detail">${escapeHtml(productDetail(item) || "Disponible selon les récoltes et les arrivages.")}</p>
+      </div>
+    </article>
+  `;
 }
 
 function renderAdvantages(items = []) {
@@ -251,10 +321,16 @@ function renderAdvantages(items = []) {
 
 function applyImages(images = []) {
   sortActive(images).filter((image) => hasText(image.zone)).forEach((image) => {
-    const slot = document.getElementById(resolveImageZone(image.zone));
-    if (!slot || !image.lien_drive) return;
-    slot.setAttribute("src", resolveImageUrl(image.lien_drive));
-    if (image.alt) slot.setAttribute("placeholder", image.alt);
+    const zone = resolveImageZone(image.zone);
+    const slots = [
+      ...document.querySelectorAll(`[data-image-zone="${cssEscape(zone)}"]`),
+      document.getElementById(zone),
+    ].filter(Boolean);
+    if (!slots.length || !image.lien_drive) return;
+    slots.forEach((slot) => {
+      slot.setAttribute("src", resolveImageUrl(image.lien_drive));
+      if (image.alt) slot.setAttribute("placeholder", image.alt);
+    });
   });
 }
 
@@ -282,6 +358,105 @@ function sortActive(items = []) {
   return items
     .filter((item) => normalizeKey(item.actif || "oui") !== "non")
     .sort((a, b) => Number(a.ordre || 0) - Number(b.ordre || 0));
+}
+
+function productCategory(item = {}) {
+  const raw = item.categorie || item.catégorie || item.category || "";
+  const normalized = normalizeKey(raw);
+  const aliases = {
+    fruit: "Fruits",
+    fruits: "Fruits",
+    legume: "Légumes",
+    legumes: "Légumes",
+    légume: "Légumes",
+    légumes: "Légumes",
+    verger: "Produits du verger",
+    "produits du verger": "Produits du verger",
+    jus: "Jus & boissons",
+    boissons: "Jus & boissons",
+    "jus & boissons": "Jus & boissons",
+    local: "Produits locaux",
+    locaux: "Produits locaux",
+    "produits locaux": "Produits locaux",
+    promo: "Promotions / lots",
+    promotions: "Promotions / lots",
+    lots: "Promotions / lots",
+    "promotions / lots": "Promotions / lots",
+  };
+  return aliases[normalized] || raw || "Produits locaux";
+}
+
+function productPrice(item = {}) {
+  return item.prix || item.price || "";
+}
+
+function productUnit(item = {}) {
+  return item.unite || item.unité || item.unit || "";
+}
+
+function productOrigin(item = {}) {
+  return item.origine || item.origin || "";
+}
+
+function productDetail(item = {}) {
+  return item.detail
+    || item.détail
+    || item.detail_court
+    || item["detail court"]
+    || item["détail court"]
+    || item.description
+    || "";
+}
+
+function productStatus(item = {}) {
+  return item.statut
+    || item.status
+    || item.badge
+    || item["statut optionnel"]
+    || "";
+}
+
+function statusLabel(value = "") {
+  const labels = {
+    nouveaute: "Nouveauté",
+    nouveauté: "Nouveauté",
+    promo: "Promo",
+    promotion: "Promo",
+    arrivage: "Arrivage",
+    "bientot disponible": "Bientôt disponible",
+    "bientôt disponible": "Bientôt disponible",
+  };
+  return labels[normalizeKey(value)] || "";
+}
+
+function isOrchardProduct(item = {}) {
+  const haystack = normalizeKey(`${item.nom || ""} ${item.categorie || ""}`);
+  return haystack.includes("verger")
+    || haystack.includes("jus")
+    || haystack.includes("compote")
+    || haystack.includes("pomme");
+}
+
+function fallbackOrchardProducts() {
+  return [
+    { ordre: "1", nom: "Jus de pomme", categorie: "Jus & boissons", image_zone: "verger_jus_pomme", origine: "Tradipom", detail: "Pur jus du verger.", actif: "oui" },
+    { ordre: "2", nom: "Jus pétillant", categorie: "Jus & boissons", image_zone: "verger_jus_petillant", origine: "Tradipom", detail: "Une boisson fruitée et festive.", actif: "oui" },
+    { ordre: "3", nom: "Compote", categorie: "Produits du verger", image_zone: "verger_compote", origine: "Tradipom", detail: "Préparée avec les pommes du verger.", actif: "oui" },
+    { ordre: "4", nom: "Pommes en sac", categorie: "Promotions / lots", image_zone: "verger_pommes_sac", origine: "Tradipom", detail: "Format familial pour la semaine.", statut: "promo", actif: "oui" },
+  ];
+}
+
+function slugify(value = "") {
+  return normalizeKey(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function cssEscape(value = "") {
+  if (window.CSS && CSS.escape) return CSS.escape(value);
+  return String(value).replace(/["\\]/g, "\\$&");
 }
 
 function resolveImageZone(zone = "") {
