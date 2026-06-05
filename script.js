@@ -136,7 +136,11 @@ function bindAccordions() {
 
     button.addEventListener("click", () => {
       const shouldOpen = !section.classList.contains("is-open");
-      if (shouldOpen) openAccordionSection(section, sections);
+      if (shouldOpen) {
+        openAccordionSection(section, sections);
+      } else {
+        closeAccordionSection(section);
+      }
     });
   });
 
@@ -183,6 +187,25 @@ function openAccordionSection(sectionToOpen, sections) {
       button.setAttribute("aria-label", isOpen ? "Fermer la section" : "Ouvrir la section");
     }
   });
+}
+
+function closeAccordionSection(section) {
+  const button = section.querySelector(".accordion-toggle");
+  const content = section.querySelector(".accordion-content");
+  section.classList.remove("is-open");
+  if (content) {
+    if (content.style.maxHeight === "none") {
+      content.style.maxHeight = `${content.scrollHeight}px`;
+      content.offsetHeight;
+    }
+    content.style.maxHeight = "0px";
+    content.setAttribute("aria-hidden", "true");
+  }
+  if (button) {
+    button.textContent = "+";
+    button.setAttribute("aria-expanded", "false");
+    button.setAttribute("aria-label", "Ouvrir la section");
+  }
 }
 
 function refreshOpenAccordionHeight() {
