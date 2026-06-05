@@ -251,9 +251,7 @@ function renderCategories(items = [], productContainer) {
     <button type="button" data-category-filter="${escapeHtml(category)}">${escapeHtml(category)}</button>
   `).join("");
 
-  container.onclick = (event) => {
-    const button = event.target.closest("[data-category-filter]");
-    if (!button) return;
+  const filterProducts = (button) => {
     const activeCategory = button.classList.contains("is-active") ? "" : button.dataset.categoryFilter;
     container.querySelectorAll("[data-category-filter]").forEach((item) => {
       item.classList.toggle("is-active", item.dataset.categoryFilter === activeCategory);
@@ -263,6 +261,14 @@ function renderCategories(items = [], productContainer) {
       card.hidden = !shouldShow;
     });
   };
+
+  container.querySelectorAll("[data-category-filter]").forEach((button) => {
+    button.addEventListener("click", () => filterProducts(button));
+    button.addEventListener("touchend", (event) => {
+      event.preventDefault();
+      filterProducts(button);
+    }, { passive: false });
+  });
 }
 
 function renderArrivals(ardoiseItems = [], productItems = []) {

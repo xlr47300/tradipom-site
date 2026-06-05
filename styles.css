@@ -473,6 +473,10 @@ image-slot {
   box-shadow: 0 12px 28px rgba(81, 58, 38, 0.1);
 }
 
+.product-card[hidden] {
+  display: none !important;
+}
+
 .product-photo-wrap {
   position: relative;
   height: 185px;
