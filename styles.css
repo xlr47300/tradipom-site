@@ -385,14 +385,24 @@ image-slot {
   margin: -8px 0 26px;
 }
 
-.category-list span {
+.category-list button {
   padding: 8px 13px;
   border: 1px solid rgba(60, 181, 187, 0.28);
   border-radius: 999px;
   background: rgba(221, 240, 242, 0.86);
   color: var(--teal-dark);
+  font-family: inherit;
   font-size: 13px;
   font-weight: 800;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.category-list button:hover,
+.category-list button.is-active {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: #fff;
 }
 
 .product-list,
@@ -817,7 +827,7 @@ image-slot {
     display: none;
   }
 
-  .category-list span {
+  .category-list button {
     flex: 0 0 auto;
     font-size: 12px;
   }

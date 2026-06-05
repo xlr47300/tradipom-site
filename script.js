@@ -225,12 +225,12 @@ function renderProducts(items = []) {
   const container = document.querySelector("[data-products-list]");
   if (!container) return;
   const products = sortActive(items).filter((item) => hasText(item.nom));
-  renderCategories(products);
+  renderCategories(products, container);
 
   container.innerHTML = products.map((item, index) => productCard(item, index)).join("");
 }
 
-function renderCategories(items = []) {
+function renderCategories(items = [], productContainer) {
   const container = document.querySelector("[data-category-list]");
   if (!container) return;
   const orderedCategories = [
@@ -248,8 +248,21 @@ function renderCategories(items = []) {
   });
 
   container.innerHTML = categories.map((category) => `
-    <span>${escapeHtml(category)}</span>
+    <button type="button" data-category-filter="${escapeHtml(category)}">${escapeHtml(category)}</button>
   `).join("");
+
+  container.onclick = (event) => {
+    const button = event.target.closest("[data-category-filter]");
+    if (!button) return;
+    const activeCategory = button.classList.contains("is-active") ? "" : button.dataset.categoryFilter;
+    container.querySelectorAll("[data-category-filter]").forEach((item) => {
+      item.classList.toggle("is-active", item.dataset.categoryFilter === activeCategory);
+    });
+    productContainer.querySelectorAll(".product-card").forEach((card) => {
+      const shouldShow = !activeCategory || card.dataset.category === activeCategory;
+      card.hidden = !shouldShow;
+    });
+  };
 }
 
 function renderArrivals(ardoiseItems = [], productItems = []) {
@@ -286,7 +299,7 @@ function productCard(item, index, prefix = "produit") {
   const id = prefix === "produit" ? imageZone : `${prefix}_${slugify(imageZone)}`;
   const status = statusLabel(productStatus(item));
   return `
-    <article class="product-card">
+    <article class="product-card" data-category="${escapeHtml(productCategory(item))}">
       <div class="product-photo-wrap">
         <image-slot id="${escapeHtml(id)}" data-image-zone="${escapeHtml(imageZone)}" placeholder="${escapeHtml(item.nom || "Photo produit")}" shape="rounded" radius="8"></image-slot>
         ${status ? `<span class="product-status">${escapeHtml(status)}</span>` : ""}
