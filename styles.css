@@ -70,6 +70,21 @@ image-slot {
 .brand-mark {
   color: currentColor;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav .brand-mark {
+  width: 42px;
+  height: 42px;
+}
+
+.brand-mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand strong {
@@ -529,6 +544,11 @@ image-slot {
     font-size: 18px;
   }
 
+  .nav .brand-mark {
+    width: 34px;
+    height: 34px;
+  }
+
   .menu-button {
     display: block;
   }
@@ -569,7 +589,7 @@ image-slot {
   }
 
   .hero-shade {
-    background: linear-gradient(to top, rgba(22, 16, 12, 0.86) 56%, rgba(22, 16, 12, 0.08));
+    background: linear-gradient(to top, rgba(22, 16, 12, 0.58) 42%, rgba(22, 16, 12, 0.16) 74%, rgba(22, 16, 12, 0.02));
   }
 
   .hero-content {
@@ -585,10 +605,12 @@ image-slot {
 
   .hero h1 {
     font-size: 34px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.42);
   }
 
   .hero p:not(.arrival-badge) {
     font-size: 14px;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.46);
   }
 
   .button-primary {
