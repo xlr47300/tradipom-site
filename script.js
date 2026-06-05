@@ -164,13 +164,32 @@ function openAccordionSection(sectionToOpen, sections) {
     const button = section.querySelector(".accordion-toggle");
     const content = section.querySelector(".accordion-content");
     section.classList.toggle("is-open", isOpen);
-    if (content) content.hidden = !isOpen;
+    if (content) {
+      if (!isOpen && content.style.maxHeight === "none") {
+        content.style.maxHeight = `${content.scrollHeight}px`;
+        content.offsetHeight;
+      }
+      content.style.maxHeight = isOpen ? `${content.scrollHeight}px` : "0px";
+      content.setAttribute("aria-hidden", String(!isOpen));
+      if (isOpen) {
+        window.setTimeout(() => {
+          if (section.classList.contains("is-open")) content.style.maxHeight = "none";
+        }, 260);
+      }
+    }
     if (button) {
       button.textContent = isOpen ? "−" : "+";
       button.setAttribute("aria-expanded", String(isOpen));
       button.setAttribute("aria-label", isOpen ? "Fermer la section" : "Ouvrir la section");
     }
   });
+}
+
+function refreshOpenAccordionHeight() {
+  const content = document.querySelector(".accordion-section.is-open .accordion-content");
+  if (content && content.style.maxHeight !== "none") {
+    content.style.maxHeight = `${content.scrollHeight}px`;
+  }
 }
 
 function findAccordionSectionFromHash(sections) {
@@ -253,6 +272,7 @@ function applyData(data) {
   renderOrchard(data.produits);
   renderAdvantages(data.avantages);
   applyImages(data.images);
+  refreshOpenAccordionHeight();
 }
 
 function applyParams(params) {
