@@ -63,6 +63,7 @@ const DEFAULT_DATA = {
 
 document.addEventListener("DOMContentLoaded", () => {
   bindMenu();
+  bindHeaderOffset();
   bindAccordions();
   loadSiteData().then(applyData).catch(() => applyData(DEFAULT_DATA));
 });
@@ -83,6 +84,17 @@ function bindMenu() {
       button.setAttribute("aria-expanded", "false");
     }
   });
+}
+
+function bindHeaderOffset() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  const update = () => {
+    document.documentElement.style.setProperty("--header-height", `${header.offsetHeight}px`);
+  };
+  update();
+  window.addEventListener("resize", update);
+  window.addEventListener("load", update);
 }
 
 function bindAccordions() {
