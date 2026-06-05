@@ -381,21 +381,23 @@ image-slot {
 .category-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: -8px 0 26px;
+  gap: 12px;
+  margin: -4px 0 30px;
 }
 
 .category-list button {
-  padding: 8px 13px;
-  border: 1px solid rgba(60, 181, 187, 0.28);
+  min-height: 42px;
+  padding: 10px 17px;
+  border: 2px solid rgba(60, 181, 187, 0.42);
   border-radius: 999px;
-  background: rgba(221, 240, 242, 0.86);
+  background: #f7feff;
   color: var(--teal-dark);
   font-family: inherit;
-  font-size: 13px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  box-shadow: 0 6px 16px rgba(60, 181, 187, 0.1);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .category-list button:hover,
@@ -403,6 +405,8 @@ image-slot {
   border-color: var(--teal);
   background: var(--teal);
   color: #fff;
+  box-shadow: 0 10px 22px rgba(42, 156, 162, 0.22);
+  transform: translateY(-1px);
 }
 
 .product-list,
@@ -509,11 +513,12 @@ image-slot {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 14px;
+  margin-bottom: 13px;
 }
 
 .product-category {
+  padding-top: 8px;
   color: var(--teal-dark);
   font-size: 11px;
   font-weight: 900;
@@ -522,16 +527,28 @@ image-slot {
 }
 
 .product-price {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 104px;
+  padding: 9px 12px;
+  border: 2px solid rgba(60, 181, 187, 0.2);
+  border-radius: 7px;
+  background: rgba(221, 240, 242, 0.72);
   color: var(--teal-dark);
-  font-size: 21px;
+  font-size: 27px;
   line-height: 1.05;
   text-align: right;
   white-space: nowrap;
+  box-shadow: 0 8px 18px rgba(42, 156, 162, 0.12);
 }
 
 .product-price-muted {
   color: var(--soft);
   font-size: 13px;
+  background: rgba(250, 247, 242, 0.9);
+  border-color: var(--border);
+  box-shadow: none;
 }
 
 .product-card h3 {
@@ -667,6 +684,42 @@ image-slot {
 }
 
 .visit-grid a:hover {
+  color: var(--teal-dark);
+}
+
+.visit-actions {
+  margin-top: 34px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.visit-button {
+  min-height: 48px;
+  padding: 13px 22px;
+  border: 2px solid var(--teal);
+  border-radius: 7px;
+  background: var(--teal);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-weight: 900;
+  box-shadow: 0 10px 22px rgba(42, 156, 162, 0.22);
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.visit-button:hover {
+  background: var(--teal-dark);
+  border-color: var(--teal-dark);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.visit-button-phone {
+  background: #fffdf9;
   color: var(--teal-dark);
 }
 
@@ -818,8 +871,8 @@ image-slot {
   .category-list {
     flex-wrap: nowrap;
     overflow-x: auto;
-    margin: -4px -20px 20px;
-    padding: 0 20px 4px;
+    margin: -4px -20px 22px;
+    padding: 0 20px 8px;
     scrollbar-width: none;
   }
 
@@ -829,7 +882,9 @@ image-slot {
 
   .category-list button {
     flex: 0 0 auto;
-    font-size: 12px;
+    min-height: 44px;
+    padding: 10px 16px;
+    font-size: 13px;
   }
 
   .arrival-list,
@@ -864,19 +919,24 @@ image-slot {
 
   .product-card-top {
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 9px;
   }
 
   .product-category {
     display: block;
     margin-bottom: 5px;
+    padding-top: 0;
     font-size: 10px;
   }
 
   .product-price {
     display: block;
+    width: fit-content;
+    min-width: 0;
+    margin: 0 0 9px;
+    padding: 8px 10px;
     text-align: left;
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .product-card h3 {
@@ -922,6 +982,20 @@ image-slot {
   .visit-grid article {
     padding: 0;
     border-right: 0;
+  }
+
+  .visit-actions {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .visit-button {
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 16px;
+    font-size: 15px;
   }
 
   .footer {
