@@ -288,6 +288,33 @@ main section {
   box-shadow: inset 0 1px 0 rgba(240, 236, 212, 0.08), inset 0 -1px 0 rgba(60, 181, 187, 0.08);
 }
 
+.ardoise .section-inner {
+  position: relative;
+  padding: 48px;
+  border: 10px solid #8b5e34;
+  border-radius: 10px;
+  background:
+    var(--slate-texture),
+    radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.035), transparent 22%),
+    linear-gradient(180deg, #20261f 0%, #171c15 100%);
+  box-shadow:
+    0 18px 36px rgba(42, 36, 32, 0.22),
+    inset 0 0 0 1px rgba(240, 236, 212, 0.08),
+    inset 0 18px 38px rgba(255, 255, 255, 0.025);
+}
+
+.ardoise .section-inner::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 10px;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent 18%, rgba(0, 0, 0, 0.16) 52%, transparent 82%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.055) 0 11px, rgba(0, 0, 0, 0.045) 11px 22px);
+  mix-blend-mode: soft-light;
+}
+
 .chalk-title {
   display: flex;
   align-items: center;
@@ -384,6 +411,7 @@ main section {
   font-family: var(--serif);
   font-size: 27px;
   font-style: italic;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 10px rgba(240, 236, 212, 0.08);
 }
 
 .chalk-title span {
@@ -419,6 +447,7 @@ main section {
   font-family: var(--serif);
   font-size: 20px;
   line-height: 1.15;
+  text-shadow: 0 0 8px rgba(240, 236, 212, 0.08);
 }
 
 .ardoise-card p {
@@ -435,6 +464,7 @@ main section {
   font-size: 26px;
   line-height: 1;
   white-space: nowrap;
+  text-shadow: 0 0 10px rgba(60, 181, 187, 0.18);
 }
 
 .weekly-arrivals,
@@ -966,6 +996,17 @@ main section {
 
   .section-inner {
     padding: 32px 20px;
+  }
+
+  .ardoise .section-inner {
+    padding: 24px 16px;
+    border-width: 7px;
+    border-radius: 8px;
+  }
+
+  .ardoise .section-inner::before {
+    inset: -7px;
+    border-radius: 8px;
   }
 
   .chalk-title {
