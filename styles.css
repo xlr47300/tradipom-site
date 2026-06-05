@@ -290,6 +290,7 @@ main section {
 
 .ardoise .section-inner {
   position: relative;
+  overflow: hidden;
   padding: 42px 48px;
   border: 1px solid rgba(221, 240, 242, 0.14);
   border-radius: 10px;
@@ -310,9 +311,13 @@ main section {
   border-radius: 10px;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(60, 181, 187, 0.16), transparent 16%, transparent 84%, rgba(60, 181, 187, 0.12)),
-    linear-gradient(180deg, rgba(240, 236, 212, 0.1), transparent 18%, transparent 82%, rgba(240, 236, 212, 0.06));
-  opacity: 0.45;
+    linear-gradient(112deg, transparent 0 12%, rgba(240, 236, 212, 0.075) 12.4%, transparent 13.2% 100%),
+    linear-gradient(17deg, transparent 0 28%, rgba(240, 236, 212, 0.055) 28.35%, transparent 29.2% 100%),
+    radial-gradient(ellipse at 22% 34%, rgba(240, 236, 212, 0.05), transparent 27%),
+    radial-gradient(ellipse at 78% 62%, rgba(240, 236, 212, 0.04), transparent 24%),
+    linear-gradient(90deg, rgba(60, 181, 187, 0.12), transparent 16%, transparent 84%, rgba(60, 181, 187, 0.1)),
+    linear-gradient(180deg, rgba(240, 236, 212, 0.08), transparent 18%, transparent 82%, rgba(240, 236, 212, 0.045));
+  opacity: 0.42;
 }
 
 .ardoise .section-inner > * {
@@ -416,7 +421,8 @@ main section {
   font-family: var(--serif);
   font-size: 27px;
   font-style: italic;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.12), 0 0 10px rgba(240, 236, 212, 0.08);
+  font-weight: 650;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.14), 0 0 12px rgba(240, 236, 212, 0.1);
 }
 
 .chalk-title span {
