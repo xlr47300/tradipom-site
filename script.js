@@ -63,6 +63,7 @@ const DEFAULT_DATA = {
 
 document.addEventListener("DOMContentLoaded", () => {
   bindMenu();
+  bindAccordions();
   loadSiteData().then(applyData).catch(() => applyData(DEFAULT_DATA));
 });
 
@@ -82,6 +83,89 @@ function bindMenu() {
       button.setAttribute("aria-expanded", "false");
     }
   });
+}
+
+function bindAccordions() {
+  const sectionSelectors = [
+    "#ardoise",
+    ".weekly-arrivals",
+    "#produits",
+    ".orchard-products",
+    "#magasin",
+    ".why",
+    "#infos",
+  ];
+  const sections = sectionSelectors
+    .map((selector) => document.querySelector(selector))
+    .filter(Boolean);
+
+  sections.forEach((section, index) => {
+    const inner = section.querySelector(".section-inner");
+    const heading = inner?.querySelector(".chalk-title, .section-heading");
+    if (!inner || !heading || heading.querySelector(".accordion-toggle")) return;
+
+    section.classList.add("accordion-section");
+    heading.classList.add("accordion-heading");
+
+    const content = document.createElement("div");
+    content.className = "accordion-content";
+    content.id = `accordion-content-${index + 1}`;
+    while (heading.nextSibling) content.appendChild(heading.nextSibling);
+    inner.appendChild(content);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "accordion-toggle";
+    button.setAttribute("aria-label", "Ouvrir la section");
+    button.setAttribute("aria-controls", content.id);
+    button.setAttribute("aria-expanded", "false");
+    button.textContent = "+";
+    heading.appendChild(button);
+
+    button.addEventListener("click", () => {
+      const shouldOpen = !section.classList.contains("is-open");
+      if (shouldOpen) openAccordionSection(section, sections);
+    });
+  });
+
+  const initialSection = findAccordionSectionFromHash(sections) || sections[0];
+  if (initialSection) openAccordionSection(initialSection, sections);
+
+  window.addEventListener("hashchange", () => {
+    const section = findAccordionSectionFromHash(sections);
+    if (section) openAccordionSection(section, sections);
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", () => {
+      window.setTimeout(() => {
+        const section = findAccordionSectionFromHash(sections);
+        if (section) openAccordionSection(section, sections);
+      }, 0);
+    });
+  });
+}
+
+function openAccordionSection(sectionToOpen, sections) {
+  sections.forEach((section) => {
+    const isOpen = section === sectionToOpen;
+    const button = section.querySelector(".accordion-toggle");
+    const content = section.querySelector(".accordion-content");
+    section.classList.toggle("is-open", isOpen);
+    if (content) content.hidden = !isOpen;
+    if (button) {
+      button.textContent = isOpen ? "−" : "+";
+      button.setAttribute("aria-expanded", String(isOpen));
+      button.setAttribute("aria-label", isOpen ? "Fermer la section" : "Ouvrir la section");
+    }
+  });
+}
+
+function findAccordionSectionFromHash(sections) {
+  if (!window.location.hash) return null;
+  const target = document.querySelector(window.location.hash);
+  if (!target) return null;
+  return sections.find((section) => section === target || section.contains(target)) || null;
 }
 
 async function loadSiteData() {
