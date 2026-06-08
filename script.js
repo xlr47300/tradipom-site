@@ -137,7 +137,7 @@ function bindAccordions() {
     button.addEventListener("click", () => {
       const shouldOpen = !section.classList.contains("is-open");
       if (shouldOpen) {
-        openAccordionSection(section, sections);
+        openAccordionSection(section, sections, { scroll: true });
       } else {
         closeAccordionSection(section);
       }
@@ -149,20 +149,20 @@ function bindAccordions() {
 
   window.addEventListener("hashchange", () => {
     const section = findAccordionSectionFromHash(sections);
-    if (section) openAccordionSection(section, sections);
+    if (section) openAccordionSection(section, sections, { scroll: true });
   });
 
   document.querySelectorAll('a[href^="#"]').forEach((link) => {
     link.addEventListener("click", () => {
       window.setTimeout(() => {
         const section = findAccordionSectionFromHash(sections);
-        if (section) openAccordionSection(section, sections);
+        if (section) openAccordionSection(section, sections, { scroll: true });
       }, 0);
     });
   });
 }
 
-function openAccordionSection(sectionToOpen, sections) {
+function openAccordionSection(sectionToOpen, sections, options = {}) {
   sections.forEach((section) => {
     const isOpen = section === sectionToOpen;
     const button = section.querySelector(".accordion-toggle");
@@ -178,7 +178,7 @@ function openAccordionSection(sectionToOpen, sections) {
       if (isOpen) {
         window.setTimeout(() => {
           if (section.classList.contains("is-open")) content.style.maxHeight = "none";
-        }, 260);
+        }, 300);
       }
     }
     if (button) {
@@ -187,6 +187,12 @@ function openAccordionSection(sectionToOpen, sections) {
       button.setAttribute("aria-label", isOpen ? "Fermer la section" : "Ouvrir la section");
     }
   });
+
+  if (options.scroll) {
+    window.setTimeout(() => {
+      sectionToOpen.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 40);
+  }
 }
 
 function closeAccordionSection(section) {
@@ -312,6 +318,8 @@ function applyParams(params) {
   setText("[data-info-hours]", compactHours(params));
   setText("[data-address-block]", `${params.adresse}\n${city}${params.departement ? ` (${params.departement})` : ""}`);
   setText("[data-hours-block]", `${params.horaires_semaine}\n${params.horaires_samedi} · ${params.horaires_dimanche}`);
+  setText("[data-footer-address]", `${params.adresse} - ${city}`);
+  setText("[data-footer-hours]", compactHours(params));
   setText("[data-email-text]", params.email);
   setText("[data-phone-text]", params.telephone);
   setText("[data-footer-copy]", `© 2026 ${params.titre_site || "Tradipom"} SAS - ${city || "47300 Bias"}`);
