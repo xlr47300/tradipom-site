@@ -102,6 +102,8 @@ function bindAccordions() {
     "#ardoise",
     "#produits",
     ".orchard-products",
+    "#magasin",
+    ".why",
   ];
   const sections = sectionSelectors
     .map((selector) => document.querySelector(selector))
