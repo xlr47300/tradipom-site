@@ -100,9 +100,7 @@ function bindHeaderOffset() {
 function bindAccordions() {
   const sectionSelectors = [
     "#ardoise",
-    ".weekly-arrivals",
     "#produits",
-    ".orchard-products",
     "#magasin",
     ".why",
     "#infos",
@@ -313,7 +311,6 @@ function applyParams(params) {
   setText("[data-param='badge_statut']", params.badge_statut);
   setText("[data-param='badge_arrivage']", params.badge_arrivage);
   setText("[data-hero-button]", params.bouton_hero);
-  setText(".nav-cta", params.bouton_contact);
   setText("[data-info-address]", `${params.adresse} - ${city}`);
   setText("[data-info-hours]", compactHours(params));
   setText("[data-address-block]", `${params.adresse}\n${city}${params.departement ? ` (${params.departement})` : ""}`);
