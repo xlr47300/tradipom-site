@@ -101,9 +101,7 @@ function bindAccordions() {
   const sectionSelectors = [
     "#ardoise",
     "#produits",
-    "#magasin",
-    ".why",
-    "#infos",
+    ".orchard-products",
   ];
   const sections = sectionSelectors
     .map((selector) => document.querySelector(selector))
@@ -142,7 +140,7 @@ function bindAccordions() {
     });
   });
 
-  const initialSection = findAccordionSectionFromHash(sections) || sections[0];
+  const initialSection = findAccordionSectionFromHash(sections);
   if (initialSection) openAccordionSection(initialSection, sections);
 
   window.addEventListener("hashchange", () => {
