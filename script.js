@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindMenu();
   bindHeaderOffset();
   bindAccordions();
+  bindImageLightbox();
   loadSiteData().then(applyData).catch(() => applyData(DEFAULT_DATA));
 });
 
@@ -377,18 +378,10 @@ function renderProducts(items = []) {
 function renderCategories(items = [], productContainer) {
   const container = document.querySelector("[data-category-list]");
   if (!container) return;
-  const orderedCategories = [
-    "Fruits",
-    "Légumes",
-    "Produits du verger",
-    "Jus & boissons",
-    "Produits locaux",
-    "Promotions / lots",
-  ];
-  const available = new Set(items.map((item) => productCategory(item)));
-  const categories = orderedCategories.filter((category) => available.has(category));
-  orderedCategories.forEach((category) => {
-    if (!available.has(category)) categories.push(category);
+  const categories = [];
+  items.forEach((item) => {
+    const category = productCategory(item);
+    if (!categories.includes(category)) categories.push(category);
   });
 
   container.innerHTML = categories.map((category) => `
@@ -490,10 +483,64 @@ function applyImages(images = []) {
       document.getElementById(zone),
     ].filter(Boolean);
     if (!slots.length || !image.lien_drive) return;
+    const imageUrl = resolveImageUrl(image.lien_drive);
     slots.forEach((slot) => {
-      slot.setAttribute("src", resolveImageUrl(image.lien_drive));
+      slot.setAttribute("src", imageUrl);
+      slot.dataset.lightboxSrc = imageUrl;
+      slot.setAttribute("role", "button");
+      slot.setAttribute("tabindex", "0");
+      slot.setAttribute("aria-label", `Agrandir ${image.alt || slot.getAttribute("placeholder") || "l'image"}`);
       if (image.alt) slot.setAttribute("placeholder", image.alt);
     });
+  });
+}
+
+function bindImageLightbox() {
+  const lightbox = document.createElement("div");
+  lightbox.className = "image-lightbox";
+  lightbox.setAttribute("aria-hidden", "true");
+  lightbox.innerHTML = `
+    <button class="image-lightbox-close" type="button" aria-label="Fermer l'image">&times;</button>
+    <img alt="">
+  `;
+  document.body.appendChild(lightbox);
+
+  const image = lightbox.querySelector("img");
+  const close = () => {
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    image.removeAttribute("src");
+    image.alt = "";
+  };
+  const open = (slot) => {
+    const src = slot.dataset.lightboxSrc || slot.getAttribute("src");
+    if (!src) return;
+    image.src = src;
+    image.alt = slot.getAttribute("placeholder") || "Image agrandie";
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+  };
+
+  document.addEventListener("click", (event) => {
+    const slot = event.composedPath?.()
+      .find((node) => node.matches?.("image-slot[data-lightbox-src]"))
+      || event.target.closest?.("image-slot[data-lightbox-src]");
+    if (!slot) return;
+    event.preventDefault();
+    event.stopPropagation();
+    open(slot);
+  }, true);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && lightbox.classList.contains("is-open")) close();
+    if ((event.key === "Enter" || event.key === " ") && event.target.matches?.("image-slot[data-lightbox-src]")) {
+      event.preventDefault();
+      open(event.target);
+    }
+  });
+
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox || event.target.closest(".image-lightbox-close")) close();
   });
 }
 
@@ -538,6 +585,10 @@ function productCategory(item = {}) {
     jus: "Jus & boissons",
     boissons: "Jus & boissons",
     "jus & boissons": "Jus & boissons",
+    vinaigre: "Jus & vinaigres",
+    vinaigres: "Jus & vinaigres",
+    "jus & vinaigre": "Jus & vinaigres",
+    "jus & vinaigres": "Jus & vinaigres",
     local: "Produits locaux",
     locaux: "Produits locaux",
     "produits locaux": "Produits locaux",

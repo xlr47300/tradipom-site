@@ -63,6 +63,10 @@ image-slot {
   background: #d7d0c6;
 }
 
+image-slot[data-lightbox-src] {
+  cursor: zoom-in;
+}
+
 .site-header {
   position: fixed;
   top: 0;
@@ -807,6 +811,45 @@ main section {
 .product-photo-wrap image-slot {
   width: 100%;
   height: 100%;
+}
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(22, 24, 20, 0.86);
+}
+
+.image-lightbox.is-open {
+  display: flex;
+}
+
+.image-lightbox img {
+  display: block;
+  max-width: min(1120px, 94vw);
+  max-height: 88vh;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  object-fit: contain;
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font: 700 30px/1 var(--sans);
+  cursor: pointer;
 }
 
 .product-status {
